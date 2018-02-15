@@ -7,7 +7,7 @@
     1. Ubercloud's docker registry servername
     2. Credentials (username and password) for the docker registry
     3. URI for the container registry
-    4. Container nam
+    4. Container name
 
 ## Usage
 - From the root of this project, upload the project into the CycleCloud locker:
