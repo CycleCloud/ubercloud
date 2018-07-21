@@ -63,7 +63,7 @@ Order = 15
 
 	[[[parameter AnsysLicenseServerURI]]]
         Label = License Server URI
-        Description = License Server to use. You should provide it in following format: "ISV_PORT:FLEXNET_PORT@LICENSE_SERVER_ADDRESS" 
+        Description = License Server to use. You should provide it in following format: "ISV_PORT:FLEXNET_PORT@LICENSE_SERVER_ADDRESS"
         Required = True
 
 	[[[parameter DCVLicenseServerURI]]]
@@ -173,12 +173,13 @@ Order = 30
             [[[[record Config.ProviderDefaults]]]]
             Azure = Standard_H16r
 
-    [[parameters Auto-Scaling]]
+    [[parameters Cluster Size]]
     Description = "The cluster can autoscale to the workload, adding execute hosts as jobs are queued. To enable this check the box below and choose the initial and maximum core counts for the cluster"
     Order = 20
 
         [[[parameter Autoscale]]]
-	ParammeterType = hidden
+        HideLabel = true
+        ParameterType = hidden
         DefaultValue = false
 
         [[[parameter InitialExecuteCoreCount]]]
@@ -212,7 +213,7 @@ Order = 30
 
         [[[parameter BatchAccount]]]
         Label = AzureBatch Account
-        Conditions.Excluded := UseLowPrio isnt true        
+        Conditions.Excluded := UseLowPrio isnt true
 
 [parameters Networking]
 Order = 40
@@ -277,7 +278,7 @@ Autoscale = $Autoscale
         [[[configuration]]]
         # You can specify Chef attributes using dot notation if needed. For example, you
         # can use it to change the default CycleServer admin password (defaults to cluster name):
-        # UberCloud containers require the hpcuser 
+        # UberCloud containers require the hpcuser
         cyclecloud.cluster.user.name = hpcuser
         cyclecloud.cluster.user.uid = 500
         cyclecloud.cluster.user.gid = 500
@@ -349,13 +350,13 @@ Autoscale = $Autoscale
         PublicPort = 7301
         Protocol = tcp
 
-        
+
         [[[input-endpoint dcv2016-7302]]]
         PrivatePort = 7302
         PublicPort = 7302
         Protocol = tcp
 
-        
+
         [[[input-endpoint dcv2016-7303]]]
         PrivatePort = 7303
         PublicPort = 7303
@@ -367,7 +368,7 @@ Autoscale = $Autoscale
         PublicPort = 7304
         Protocol = tcp
 
-        
+
         [[[input-endpoint dcv2016-7305]]]
         PrivatePort = 7305
         PublicPort = 7305
