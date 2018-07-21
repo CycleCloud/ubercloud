@@ -13,13 +13,13 @@
     $ cyclecloud project upload LOCKER-NAME
 ```
 
-- Import the cluster as a template:
-  - Generic UberCloud cluster template
+* Import the cluster as a template:
+  * Generic UberCloud cluster template
 ```
     $ cyclecloud import_template -f templates/ubercloud_template.txt -c UberCloud
 ```
-  - UberCloud ANSYS 19.0 cluster template
+  * UberCloud ANSYS 19.0 cluster template
 ```
   $ cyclecloud import_template -f templates/ansys19_template.txt -c ANSYS_19.0
 ```
-- Use the CycleCloud UI to launch an Ubercloud Cluster
+* Use the CycleCloud UI to launch an Ubercloud Cluster
