@@ -9,14 +9,11 @@ cluster.store_discoverable()
 include_recipe "::nfsserver"
 include_recipe "::dockerd"
 
-docker_port = node["ubercloud"]["docker"]["port"]
 private_registry_user = node["ubercloud"]["docker"]["private_registry_user"]
 private_registry_user_password = node["ubercloud"]["docker"]["private_registry_user_password"]
 private_registry_server = node["ubercloud"]["docker"]["private_registry_server"]
 container_image_private_registry_uri = node["ubercloud"]["docker"]["container_image_for_headnode_private_registry_uri"]
-container_image_name = node["ubercloud"]["docker"]["container_image_name"]
 customer_email_address = node["ubercloud"]['docker']['customer_email_address']
-registry_username = node["ubercloud"]['docker']['private_registry_user']
 license_server_string = node["ubercloud"]["docker"]["ansys_license_server"]
 dcv_server_string = node["ubercloud"]["docker"]["dcv_license_server"]
 
@@ -85,7 +82,7 @@ file '/tmp/start_container' do
 
     image_id=`docker images  | grep -i ansys | awk '{print $3}'`
 
-    docker run -d --privileged --net host -v '/mnt/exports/shared/hpcuser:/home/hpcuser/cluster_shared_storage' --env "ENV_PRODUCT=default" --env "ENV_CLUSTER_DISCOVERY=consul://#{ubercloud_master_ip}:8500" --env "ENV_NOVNCD_PORT=5901" --env "ENV_NOVNC_PORT=5901" --env "ENV_USE_INTERFACE=eth0" --env "ENV_CUSTOMER_EMAIL=#{customer_email_address}" --env "ENV_SSH_PORT=1022" --env "ENV_SSHD_PORT=1022" --env "ENV_ORDER_NUMBER=cyclecloud_cluster_for_#{registry_username}" --env "ENV_LICENSE_SERVER=#{license_server_string}" --env "ENV_DCV_LICENSE=#{dcv_server_string}" -p 7300-7399:7300-7399 -p 5900:5900  $image_id
+    docker run -d --privileged --net host -v '/mnt/exports/shared/hpcuser:/home/hpcuser/cluster_shared_storage' --env "ENV_PRODUCT=default" --env "ENV_CLUSTER_DISCOVERY=consul://#{ubercloud_master_ip}:8500" --env "ENV_NOVNCD_PORT=5901" --env "ENV_NOVNC_PORT=5901" --env "ENV_USE_INTERFACE=eth0" --env "ENV_CUSTOMER_EMAIL=#{customer_email_address}" --env "ENV_SSH_PORT=1022" --env "ENV_SSHD_PORT=1022" --env "ENV_ORDER_NUMBER=cyclecloud_cluster_for_#{private_registry_user}" --env "ENV_LICENSE_SERVER=#{license_server_string}" --env "ENV_DCV_LICENSE=#{dcv_server_string}" -p 7300-7399:7300-7399 -p 5900:5900  $image_id
 
    cont_id=`docker ps -q`
 
