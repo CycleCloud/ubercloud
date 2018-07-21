@@ -156,7 +156,7 @@ Order = 30
             Azure = Standard_H16r
 
     [[parameters Cluster Size]]
-    Description = "The cluster can autoscale to the workload, adding execute hosts as jobs are queued. To enable this check the box below and choose the initial and maximum core counts for the cluster"
+    Description = "Please choose the initial and maximum core counts for the cluster."
     Order = 20
 
         [[[parameter Autoscale]]]
