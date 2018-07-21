@@ -27,7 +27,7 @@ directory '/mnt/exports/shared' do
   mode 700
   owner 60001
   group 60001
-  action :create_if_missing
+  action :create
 end
 
 execute 'mount_nfs_share' do
