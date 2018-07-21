@@ -1,16 +1,16 @@
-############################
-## UGE Configuration File ##
-############################
+################################################
+## UberCloud ANSYS Cluster Configuration File ##
+################################################
 
 [parameters License]
 Order = 1
 
-    [[parameters Univa Grid Engine]]
+    [[parameters UberCloud ANSYS 19 Cluster]]
 
-        [[[parameter UGE]]]
+        [[[parameter ANSYS190]]]
         HideLabel = true
         Config.Plugin = pico.widget.HtmlTemplateWidget
-        Config.Template := "<table><tr><td><img src='http://download.cyclecomputing.com/logos/univa-192x192.png' width='192' height='192' ></td></tr><tr><td><p>Contact <a href=\"http://www.univa.com/products/\" target=\"_blank\">Univa Corporation</a> for required licenses and binaries.</p></td></tr></table>"
+	Config.Template := "<table><tr><td><img src='https://s3.amazonaws.com/ubercloud.public.tools/cyclecloud-related/images/ANSYS_Logo.png' width='300' height='86' ></td><td><h2>Running ANSYS on Azure</h2><p>ANSYS has been pre-installed, configured, and tested on Microsoft Azure by an <a href='https://www.ansys.com/about-ansys/partner-ecosystem/cloud-hosting-partners/ubercloud'>ANSYS Cloud Hosting Partner</a>, <a href='https://www.theubercloud.com'>UberCloud</a>. UberCloud provides ready to execute ANSYS clusters, literally in an instant with no need to install software, deal with complex OS commands, or configure.</p>To learn more about running ANSYS on Microsoft Azure, please contact <a href='emailto:help@theubercloud.com'>help@theubercloud.com</a><p></p><p>(ANSYS is a trademark of ANSYS Inc. <a href='https://www.theubercloud.com'>UberCloud</a> is a <a href='https://www.ansys.com/about-ansys/partner-ecosystem/cloud-hosting-partners/ubercloud'>Cloud Hosting Partner of ANSYS</a>.)</p></td></tr></table>"
 
 [parameters General Settings]
 Order = 10
@@ -37,35 +37,50 @@ Order = 10
 
 [parameters UberCloud]
 Order = 15
+    [[parameters UberCloud ANSYS Cluster]]
+    Order = 5
 
-    [[parameters UberCloud Containers]]
-    Description = "Specify the Ubercloud Container Docker registry Configs."
+        [[[parameter ANSYS19]]]
+        HideLabel = true
+        Config.Plugin = pico.widget.HtmlTemplateWidget
+	Config.Template := "<table><tr><td><img src='https://s3.amazonaws.com/ubercloud.public.tools/cyclecloud-related/images/ANSYS_Logo.png' width='300' height='86' ></td><td><h2>Running ANSYS on Azure</h2><p>ANSYS has been pre-installed, configured, and tested on Microsoft Azure by an <a href='https://www.ansys.com/about-ansys/partner-ecosystem/cloud-hosting-partners/ubercloud'>ANSYS Cloud Hosting Partner</a>, <a href='https://www.theubercloud.com'>UberCloud</a>. UberCloud provides ready to execute ANSYS clusters, literally in an instant with no need to install software, deal with complex OS commands, or configure.</p>To learn more about running ANSYS on Microsoft Azure, please contact <a href='emailto:help@theubercloud.com'>help@theubercloud.com</a><p></p><p>(ANSYS is a trademark of ANSYS Inc. <a href='https://www.theubercloud.com'>UberCloud</a> is a <a href='https://www.ansys.com/about-ansys/partner-ecosystem/cloud-hosting-partners/ubercloud'>Cloud Hosting Partner of ANSYS</a>.)</p></td></tr></table>"
+
+    [[parameters UberCloud Settings]]
+    Description = "Enter the Ubercloud Cluster related information"
     Order = 10
 
-        [[[parameter RegistryServer]]]
-        Label =  Registry Server 
-        Description = Hostname of private Docker registry server for fetching Docker containers from
+
+        [[[parameter CustomerEmailAddress]]]
+        Label = Email address of the person that use this UberCloud container
+        Description = Email address of the person that use this UberCloud container
+        Required = True
+
+	[[[parameter ImageIdPrefix]]]
+        ParameterType = hidden
+        HideLabel = true
+        DefaultValue = "/subscriptions/319f3b67-0a2c-49e3-8ee2-ec8ffc6d7e3f/resourceGroups/image-store/providers/Microsoft.Compute/images/nv-c73-n35279-cycle-v1"
+
+
+	[[[parameter AnsysLicenseServerURI]]]
+        Label = ANSYS License Server URI
+        Description = ANSYS License Server to use, you should provide it in following format: "ISV_PORT:FLEXNET_PORT@LICENSE_SERVER_ADDRESS"
+        Required = True
+
+	[[[parameter DCVLicenseServerURI]]]
+        Label = DCV License Server URI
+        Description = DCV License Server to use, you should provide it in following format: "PORT@LICENSE_SERVER_ADDRESS"
         Required = True
 
         [[[parameter RegistryUser]]]
         Label = Registry User
         Description = Username for private docker registry used to access conainers
-        Required = True
+        Required = False
 
         [[[parameter RegistryUserPassword]]]
         Label = Reg User Password
         Description = Password for private docker registry used to access conainers
-        Required = True
+        Required = False
 
-        [[[parameter ContainerImageRegistryURI]]]
-        Label = Container Reg URI 
-        Description = Location of the Container image registry
-        Required = True
-
-        [[[parameter ContainerImageName]]]
-        Label = Container Name
-        Description = Image name of container to be used
-        Required = True
 
 [parameters Cluster Software]
 Order = 20
@@ -94,16 +109,6 @@ Order = 20
         Label = Exec Cluster-Init
         Description = Cluster init specs to apply to execute nodes
         ParameterType = Cloud.ClusterInitSpecs
-
-        [[[parameter GridEngineVersion]]]
-        Label = GridEngine version
-        Description = "The version of Univa GridEngine to install"
-        DefaultValue = 8.5.0
-
-        [[[parameter GridEngineRoot]]]
-        Label = GridEngine root
-        Description = "The location of the GridEngine install"
-        DefaultValue = /sched/ge/ge-8.5.0
 
     [[parameters Node Access]]
     Description = "Specify the credentials required for access to the node.  The Keypair Path specifies the path on local machines for cyclecloud CLI access."
@@ -141,24 +146,23 @@ Order = 30
         Description = The machine type for scheduler master and shared filer.
         ParameterType = Cloud.MachineType
             [[[[record Config.ProviderDefaults]]]]
-            Azure = Standard_A4
+            Azure = Standard_NV6
 
         [[[parameter ExecuteMachineType]]]
         Label = Execute Type
         Description = The machine type for execute nodes
         ParameterType = Cloud.MachineType
             [[[[record Config.ProviderDefaults]]]]
-            Azure = Standard_A4
+            Azure = Standard_H16r
 
-    [[parameters Auto-Scaling]]
-    Description = "The cluster can autoscale to the workload, adding execute hosts as jobs are queued. To enable this check the box below and choose the initial and maximum core counts for the cluster"
+    [[parameters Cluster Size]]
+    Description = "Please choose the initial and maximum core counts for the cluster."
     Order = 20
 
         [[[parameter Autoscale]]]
-        Label = Autoscale
-        DefaultValue = true
-        Widget.Plugin = pico.form.BooleanCheckBox
-        Widget.Label = Start and stop execute instances automatically
+	      ParameterType = hidden
+        HideLabel = true
+        DefaultValue = false
 
         [[[parameter InitialExecuteCoreCount]]]
         Label = Initial Cores
@@ -172,7 +176,7 @@ Order = 30
         [[[parameter MaxExecuteCoreCount]]]
         Label = Max Cores
         Description = The total number of execute cores to start
-        DefaultValue = 10
+        DefaultValue = 256
         Config.Plugin = pico.form.NumberTextBox
         Config.MinValue = 1
         Config.MaxValue = 5000
@@ -191,7 +195,7 @@ Order = 30
 
         [[[parameter BatchAccount]]]
         Label = AzureBatch Account
-        Conditions.Excluded := UseLowPrio isnt true        
+        Conditions.Excluded := UseLowPrio isnt true
 
 [parameters Networking]
 Order = 40
@@ -223,10 +227,10 @@ Order = 40
         ParameterType = Azure.Subnet
 
 
-[cluster UberCloud]
+[cluster ANSYS_19.0]
 FormLayout = selectionpanel
 Category = Ubercloud
-IconUrl = https://www.theubercloud.com/hs-fs/hubfs/Images/Logos/UberCloudLogo.png
+IconUrl = https://s3.amazonaws.com/ubercloud.public.tools/cyclecloud-related/images/ansys_icon.png
 
 # Enable/disable autoscaling
 # The scheduler load will determine the number of execute machines that are started, machines will terminate themselves if they are idle
@@ -256,36 +260,144 @@ Autoscale = $Autoscale
         [[[configuration]]]
         # You can specify Chef attributes using dot notation if needed. For example, you
         # can use it to change the default CycleServer admin password (defaults to cluster name):
-        gridengine.make = ge
-        gridengine.version = $GridEngineVersion
-        gridengine.root = $GridEngineRoot
-        # UberCloud containers require the hpcuser 
+        # UberCloud containers require the hpcuser
         cyclecloud.cluster.user.name = hpcuser
         cyclecloud.cluster.user.uid = 500
         cyclecloud.cluster.user.gid = 500
 
         [[[configuration ubercloud]]]
-        docker.private_registry_server = $RegistryServer
+        #docker.private_registry_server = $RegistryServer
         docker.private_registry_user = $RegistryUser
         docker.private_registry_user_password = $RegistryUserPassword
-        docker.container_image_private_registry_uri = $ContainerImageRegistryURI
-        docker.container_image_name = $ContainerImageName
+        #docker.container_image_private_registry_uri = $ContainerImageRegistryURI
+        #docker.container_image_name = $ContainerImageName
+        docker.customer_email_address = $CustomerEmailAddress
+        docker.ansys_license_server = $AnsysLicenseServerURI
+	docker.dcv_license_server = $DCVLicenseServerURI
 
-        [[[cluster-init gridengine:default:1.0.0]]]
-        [[[cluster-init ubercloud:default:1.0.0]]]
+        [[[cluster-init ubercloud:ansys19:1.0.0]]]
 
     [[node master]]
     MachineType = $MasterMachineType
     IsReturnProxy = $ReturnProxy
+
+    #Azure.Publisher = OpenLogic
+    #Azure.Offer = CentOS
+    #Azure.ImageVersion = 7.4.20180118
+    #Azure.Sku = 7.4
+    #Azure.OS = linux
+
+    ImageId = $ImageIdPrefix-$Region
+    ImageOS = linux
+
 
     AdditionalClusterInitSpecs = $MasterClusterInitSpecs
 
         [[[network-interface eth0]]]
         AssociatePublicIpAddress = $MasterPublicIp
 
-        [[[cluster-init gridengine:master:1.0.0]]]
-        [[[cluster-init ubercloud:master:1.0.0]]]
-        
+        [[[cluster-init ubercloud:default:1.0.0]]]
+	run_list = recipe[ansys19::master]
+
+        [[[input-endpoint adminssh]]]
+        PrivatePort = 22
+        PublicPort = 22
+        Protocol = tcp
+
+
+        [[[input-endpoint containerssh]]]
+        PrivatePort = 1022
+        PublicPort = 1022
+        Protocol = tcp
+
+        [[[input-endpoint novnc5901]]]
+        PrivatePort = 5901
+        PublicPort = 5901
+        Protocol = tcp
+
+        [[[input-endpoint novnc5900]]]
+        PrivatePort = 5900
+        PublicPort = 5900
+        Protocol = tcp
+
+        [[[input-endpoint dcv2016-7300]]]
+        PrivatePort = 7300
+        PublicPort = 7300
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7301]]]
+        PrivatePort = 7301
+        PublicPort = 7301
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7302]]]
+        PrivatePort = 7302
+        PublicPort = 7302
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7303]]]
+        PrivatePort = 7303
+        PublicPort = 7303
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7304]]]
+        PrivatePort = 7304
+        PublicPort = 7304
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7305]]]
+        PrivatePort = 7305
+        PublicPort = 7305
+        Protocol = tcp
+
+
+
+        [[[input-endpoint dcv2016-7306]]]
+        PrivatePort = 7306
+        PublicPort = 7306
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7307]]]
+        PrivatePort = 7307
+        PublicPort = 7307
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7308]]]
+        PrivatePort = 7308
+        PublicPort = 7308
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7309]]]
+        PrivatePort = 7309
+        PublicPort = 7309
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7310]]]
+        PrivatePort = 7310
+        PublicPort = 7310
+        Protocol = tcp
+
+
+
+        [[[volume clustershared]]]
+        Size = 512
+        Mount = clustershared
+
+
+        [[[configuration cyclecloud.mounts.clustershared]]]
+        mountpoint = /mnt/exports/shared
+	Azure.LUN=0
+
+
 
     [[nodearray execute]]
     MachineType = $ExecuteMachineType
@@ -302,5 +414,5 @@ Autoscale = $Autoscale
 
     AdditionalClusterInitSpecs = $ExecuteClusterInitSpecs
 
-        [[[cluster-init gridengine:execute:1.0.0]]]
-        [[[cluster-init ubercloud:slave:1.0.0]]]
+        [[[cluster-init ubercloud:default:1.0.0]]]
+	run_list = recipe[ansys19::slave]

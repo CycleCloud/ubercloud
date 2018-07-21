@@ -3,4 +3,4 @@ node.default["ubercloud"]["docker"]["private_registry_user"] = ""
 node.default["ubercloud"]["docker"]["private_registry_user_password"] = ""
 node.default["ubercloud"]["docker"]["private_registry_server"] = ""
 node.default["ubercloud"]["docker"]["container_image_private_registry_uri"] = ""
-
+node.default["ubercloud"]["docker"]["container_image_for_headnode_private_registry_uri"] = ""

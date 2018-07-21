@@ -82,7 +82,7 @@ file '/tmp/start_container' do
 
     image_id=`docker images  | grep -i ansys | awk '{print $3}'`
 
-    docker run -d --privileged --net host -v '/mnt/exports/shared/hpcuser:/home/hpcuser/cluster_shared_storage' --env "ENV_PRODUCT=default" --env "ENV_CLUSTER_DISCOVERY=consul://#{ubercloud_master_ip}:8500" --env "ENV_NOVNCD_PORT=5901" --env "ENV_NOVNC_PORT=5901" --env "ENV_USE_INTERFACE=eth0" --env "ENV_CUSTOMER_EMAIL=#{customer_email_address}" --env "ENV_SSH_PORT=1022" --env "ENV_SSHD_PORT=1022" --env "ENV_ORDER_NUMBER=cyclecloud_cluster_for_#{private_registry_user}" --env "ENV_LICENSE_SERVER=#{license_server_string}" --env "ENV_DCV_LICENSE=#{dcv_server_string}" -p 7300-7399:7300-7399 -p 5900:5900  $image_id
+    docker run -d --privileged --net host -v '/mnt/exports/shared/hpcuser:/home/hpcuser/cluster_shared_storage' --env "ENV_PRODUCT=default" --env "ENV_CLUSTER_DISCOVERY=consul://#{ubercloud_master_ip}:8500" --env "ENV_NOVNCD_PORT=5901" --env "ENV_NOVNC_PORT=5901" --env "ENV_USE_INTERFACE=eth0" --env "ENV_CUSTOMER_EMAIL=#{customer_email_address}" --env "ENV_SSH_PORT=1022" --env "ENV_SSHD_PORT=1022" --env "ENV_ORDER_NUMBER=ansys_cluster_for_#{private_registry_user}" --env "ENV_LICENSE_SERVER=#{license_server_string}" --env "ENV_DCV_LICENSE=#{dcv_server_string}" -p 7300-7399:7300-7399 -p 5900:5900  $image_id
 
    cont_id=`docker ps -q`
 
