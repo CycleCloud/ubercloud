@@ -1,0 +1,436 @@
+##################################################
+## UberCloud Generic Cluster Configuration File ##
+##################################################
+
+[parameters License]
+Order = 1
+
+    [[parameters UberCloud Container Cluster]]
+
+        [[[parameter ubercloud0]]]
+        HideLabel = true
+        Config.Plugin = pico.widget.HtmlTemplateWidget
+	Config.Template := "<table><tr><td><img src='https://s3.amazonaws.com/ubercloud.public.tools/cyclecloud-related/images/UberCloudLogo.jpg' width='254' height='192' ></td><td><h2>About UberCloud Containers</h2><p><a href='https://www.theubercloud.com'>UberCloud </a>Containers are ready-to-execute packages of software. These packages are designed to deliver the tools that users needs to complete their task in hand.</p><p><a href='https://www.theubercloud.com'>UberCloud </a>focusses on Simulation related container images. The commercial and Open Source tools are pre-installed, configured, and tested, in the container, and are running without loss of performance. <a href='https://www.theubercloud.com'>UberCloud </a>containers are ready to execute, literally in an instant with no need to install software, deal with complex OS commands, or configure.</p><p>To learn more about <a href='https://www.theubercloud.com'>UberCloud </a>containers and for a list of simulation tools <a href='https://www.theubercloud.com'>UberCloud </a>supports, please contact <a href='emailto:help@theubercloud.com'>help@theubercloud.com</a>.)</p></td></tr></table>"
+
+[parameters General Settings]
+Order = 10
+
+    [[parameters Cloud Service Provider Configuration]]
+    Description = Configure the Cloud Provider account options.
+    Order = 10
+
+        [[[parameter CloudProvider]]]
+        Label = Cloud Provider
+        ParameterType = Cloud.Provider
+        DefaultValue = azure
+        Hidden = true
+
+        [[[parameter Credentials]]]
+        Description = The credentials for the cloud provider
+        ParameterType = Cloud.Credentials
+
+        [[[parameter Region]]]
+        Label = Region
+        Description = Deployment Location
+        ParameterType = Cloud.Region
+        DefaultValue = westus2
+
+[parameters UberCloud]
+Order = 15
+    [[parameters UberCloud Generic Cluster]]
+    Order = 5
+
+        [[[parameter ubercloud1]]]
+        HideLabel = true
+        Config.Plugin = pico.widget.HtmlTemplateWidget
+	Config.Template := "<table><tr><td><img src='https://s3.amazonaws.com/ubercloud.public.tools/cyclecloud-related/images/UberCloudLogo.jpg' width='254' height='192' ></td><td><h2>About UberCloud Containers</h2><p><a href='https://www.theubercloud.com'>UberCloud </a>Containers are ready-to-execute packages of software. These packages are designed to deliver the tools that users needs to complete their task in hand.</p><p><a href='https://www.theubercloud.com'>UberCloud </a>focusses on Simulation related container images. The commercial and Open Source tools are pre-installed, configured, and tested, in the container, and are running without loss of performance. <a href='https://www.theubercloud.com'>UberCloud </a>containers are ready to execute, literally in an instant with no need to install software, deal with complex OS commands, or configure.</p><p>To learn more about <a href='https://www.theubercloud.com'>UberCloud </a>containers and for a list of simulation tools <a href='https://www.theubercloud.com'>UberCloud </a>supports, please contact <a href='emailto:help@theubercloud.com'>help@theubercloud.com</a>.)</p></td></tr></table>"
+
+    [[parameters UberCloud Settings]]
+    Description = "Enter the Ubercloud Cluster related information"
+    Order = 10
+
+
+        [[[parameter CustomerEmailAddress]]]
+        Label = Email address of the person that use this UberCloud container
+        Description = Email address of the person that use this UberCloud container
+        Required = True
+
+	[[[parameter ImageIdPrefix]]]
+        ParameterType = hidden
+        HideLabel = true
+        DefaultValue = "/subscriptions/319f3b67-0a2c-49e3-8ee2-ec8ffc6d7e3f/resourceGroups/image-store/providers/Microsoft.Compute/images/nv-c73-n35279-cycle-v1"
+
+
+	[[[parameter AnsysLicenseServerURI]]]
+        Label = License Server URI
+        Description = License Server to use. You should provide it in following format: "ISV_PORT:FLEXNET_PORT@LICENSE_SERVER_ADDRESS" 
+        Required = True
+
+	[[[parameter DCVLicenseServerURI]]]
+        Label = DCV License Server URI
+        Description = DCV License Server to use."
+        Required = True
+
+
+	[[[parameter RegistryServer]]]
+        Label =  Registry Server
+        Description = Hostname of private Docker registry server for fetching Docker containers from
+        Required = True
+
+        [[[parameter RegistryUser]]]
+        Label = Registry User
+        Description = Username for private docker registry used to access conainers
+        Required = True
+
+        [[[parameter RegistryUserPassword]]]
+        Label = Reg User Password
+        Description = Password for private docker registry used to access conainers
+        Required = True
+
+
+	[[[parameter MasterContainerImageURI]]]
+	Label = Master Container Reg URI
+        Description = Location of the Master Container image registry
+        Required = True
+
+        [[[parameter ContainerImageRegistryURI]]]
+        Label = Container Reg URI
+        Description = Location of the Container image registry
+        Required = True
+
+
+
+[parameters Cluster Software]
+Order = 20
+
+    [[parameters Software]]
+    Description = "Specify the scheduling software, and base OS installed on all nodes, and optionally the cluster-init and chef versions from your Locker."
+    Order = 10
+
+        [[[parameter ImageName]]]
+        Label = Base OS
+        ParameterType = Cloud.Image
+        Config.OS = linux
+        DefaultValue = cycle.image.centos7
+
+        [[[parameter DefaultClusterInitSpecs]]]
+        Label = Default Cluster-Init
+        Description = Cluster init specs to apply to all nodes
+        ParameterType = Cloud.ClusterInitSpecs
+
+        [[[parameter MasterClusterInitSpecs]]]
+        Label = Master Cluster-Init
+        Description = Cluster init specs to apply to the master node
+        ParameterType = Cloud.ClusterInitSpecs
+
+        [[[parameter ExecuteClusterInitSpecs]]]
+        Label = Exec Cluster-Init
+        Description = Cluster init specs to apply to execute nodes
+        ParameterType = Cloud.ClusterInitSpecs
+
+    [[parameters Node Access]]
+    Description = "Specify the credentials required for access to the node.  The Keypair Path specifies the path on local machines for cyclecloud CLI access."
+    Order = 20
+
+        [[[parameter keypairLocation]]]
+        Label = Keypair Path
+        Description = The path to the keypair
+        DefaultValue = ~/.ssh/cyclecloud.pem
+        Required = True
+
+        [[[parameter Username]]]
+        Label = Username
+        Description = The username for the built-in local user on all nodes for direct ssh access.
+        DefaultValue = cyclecloud
+        Conditions.Required := (CloudProvider === "Azure" && startswith("cycle.image.win", ImageName))
+        Conditions.Excluded := !(CloudProvider === "Azure" && startswith("cycle.image.win", ImageName))
+
+        [[[parameter Password]]]
+        Label = Password
+        ParameterType = Password
+        Description = The password for the built-in local user on all nodes for direct ssh access.
+        Conditions.Required := (CloudProvider === "Azure" && startswith("cycle.image.win", ImageName))
+        Conditions.Excluded := !(CloudProvider === "Azure" && startswith("cycle.image.win", ImageName))
+
+[parameters Compute Backend]
+Order = 30
+
+    [[parameters Instance Types]]
+    Description = "The cluster, in this case, has two roles: the scheduler master-node with shared filer and the execute hosts. Configure which instance types to use based on the requirements of your application."
+    Order = 10
+
+        [[[parameter MasterMachineType]]]
+        Label = Master Type
+        Description = The machine type for scheduler master and shared filer.
+        ParameterType = Cloud.MachineType
+            [[[[record Config.ProviderDefaults]]]]
+            Azure = Standard_NV6
+
+        [[[parameter ExecuteMachineType]]]
+        Label = Execute Type
+        Description = The machine type for execute nodes
+        ParameterType = Cloud.MachineType
+            [[[[record Config.ProviderDefaults]]]]
+            Azure = Standard_H16r
+
+    [[parameters Auto-Scaling]]
+    Description = "The cluster can autoscale to the workload, adding execute hosts as jobs are queued. To enable this check the box below and choose the initial and maximum core counts for the cluster"
+    Order = 20
+
+        [[[parameter Autoscale]]]
+	ParammeterType = hidden
+        DefaultValue = false
+
+        [[[parameter InitialExecuteCoreCount]]]
+        Label = Initial Cores
+        Description = The number of execute cores to launch on startup
+        DefaultValue = 0
+        Config.Plugin = pico.form.NumberTextBox
+        Config.MinValue = 0
+        Config.MaxValue = 5000
+        Config.IntegerOnly = true
+
+        [[[parameter MaxExecuteCoreCount]]]
+        Label = Max Cores
+        Description = The total number of execute cores to start
+        DefaultValue = 256
+        Config.Plugin = pico.form.NumberTextBox
+        Config.MinValue = 1
+        Config.MaxValue = 5000
+        Config.IntegerOnly = true
+
+    [[parameters Azure Low Priority]]
+    Description = "To use low priority instances check the box, otherwise on-demand instances will be used"
+    Conditions.Excluded := CloudProvider !== "Azure"
+    Order = 30
+
+        [[[parameter UseLowPrio]]]
+        Label = Use Low Prio Instances
+        DefaultValue = false
+        Widget.Plugin = pico.form.BooleanCheckBox
+        Widget.Label = Use low priority instances for execute hosts
+
+        [[[parameter BatchAccount]]]
+        Label = AzureBatch Account
+        Conditions.Excluded := UseLowPrio isnt true        
+
+[parameters Networking]
+Order = 40
+
+    [[parameters General]]
+    Order = 10
+
+        [[[parameter ReturnProxy]]]
+        Label = Return Proxy
+        DefaultValue = true
+        Widget.Plugin = pico.form.BooleanCheckBox
+        Widget.Label = Allow cloud instances to report back their state
+
+        [[[parameter MasterPublicIp]]]
+        Label = Master has Public IP
+        DefaultValue = true
+        Widget.Plugin = pico.form.BooleanCheckBox
+        Widget.Label = Assign a public ip address to the master node
+
+    [[parameters Virtual Network Configuration]]
+    Order = 40
+    Conditions.Excluded := CloudProvider !== "Azure"
+
+        [[[parameter SubnetId]]]
+        Label = Subnet ID
+        Description = Subnet Resource Path (ResourceGroup/VirtualNetwork/Subnet)
+        Conditions.Required := CloudProvider === "Azure"
+        Conditions.Excluded := CloudProvider !== "Azure"
+        ParameterType = Azure.Subnet
+
+
+[cluster UberCloud]
+FormLayout = selectionpanel
+Category = Ubercloud
+IconUrl = https://s3.amazonaws.com/ubercloud.public.tools/cyclecloud-related/images/UberCloudLogo.jpg
+
+# Enable/disable autoscaling
+# The scheduler load will determine the number of execute machines that are started, machines will terminate themselves if they are idle
+# and approaching a billing cycle.
+Autoscale = $Autoscale
+
+    # defines default values used for all nodes. This is inherited automatically by all nodes.
+    # You can create other nodes like this by adding Abstract = true to them and adding
+    # Extends = foo to the nodes that should inherit the definitions from foo.
+    [[node defaults]]
+    Credentials = $Credentials
+
+    ImageName = $ImageName
+    SubnetId = $SubnetId
+    Region = $Region
+    KeyPairLocation = $keypairLocation
+
+    # Azure Windows
+    Username = $Username
+    Password = $Password
+
+    AdditionalClusterInitSpecs = $DefaultClusterInitSpecs
+
+        [[[network-interface eth0]]]
+        AssociatePublicIpAddress = false
+
+        [[[configuration]]]
+        # You can specify Chef attributes using dot notation if needed. For example, you
+        # can use it to change the default CycleServer admin password (defaults to cluster name):
+        # UberCloud containers require the hpcuser 
+        cyclecloud.cluster.user.name = hpcuser
+        cyclecloud.cluster.user.uid = 500
+        cyclecloud.cluster.user.gid = 500
+
+        [[[configuration ubercloud]]]
+        docker.private_registry_server = $RegistryServer
+        docker.private_registry_user = $RegistryUser
+        docker.private_registry_user_password = $RegistryUserPassword
+        docker.container_image_private_registry_uri = $ContainerImageRegistryURI
+        #docker.container_image_name = $ContainerImageName
+        docker.customer_email_address = $CustomerEmailAddress
+        docker.ansys_license_server = $AnsysLicenseServerURI
+        docker.dcv_license_server = $DCVLicenseServerURI
+	docker.container_image_for_headnode_private_registry_uri = $MasterContainerImageURI
+
+        [[[cluster-init ubercloud:default:1.0.0]]]
+
+    [[node master]]
+    MachineType = $MasterMachineType
+    IsReturnProxy = $ReturnProxy
+
+    #Azure.Publisher = OpenLogic
+    #Azure.Offer = CentOS
+    #Azure.ImageVersion = 7.4.20180118
+    #Azure.Sku = 7.4
+    #Azure.OS = linux
+
+    ImageId = $ImageIdPrefix-$Region
+    ImageOS = linux
+
+
+    AdditionalClusterInitSpecs = $MasterClusterInitSpecs
+
+        [[[network-interface eth0]]]
+        AssociatePublicIpAddress = $MasterPublicIp
+
+        [[[cluster-init ubercloud:default:1.0.0]]]
+	run_list = recipe[ubercloud::master]
+
+        [[[input-endpoint adminssh]]]
+        PrivatePort = 22
+        PublicPort = 22
+        Protocol = tcp
+
+
+        [[[input-endpoint containerssh]]]
+        PrivatePort = 1022
+        PublicPort = 1022
+        Protocol = tcp
+
+        [[[input-endpoint novnc5901]]]
+        PrivatePort = 5901
+        PublicPort = 5901
+        Protocol = tcp
+
+        [[[input-endpoint novnc5900]]]
+        PrivatePort = 5900
+        PublicPort = 5900
+        Protocol = tcp
+
+        [[[input-endpoint dcv2016-7300]]]
+        PrivatePort = 7300
+        PublicPort = 7300
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7301]]]
+        PrivatePort = 7301
+        PublicPort = 7301
+        Protocol = tcp
+
+        
+        [[[input-endpoint dcv2016-7302]]]
+        PrivatePort = 7302
+        PublicPort = 7302
+        Protocol = tcp
+
+        
+        [[[input-endpoint dcv2016-7303]]]
+        PrivatePort = 7303
+        PublicPort = 7303
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7304]]]
+        PrivatePort = 7304
+        PublicPort = 7304
+        Protocol = tcp
+
+        
+        [[[input-endpoint dcv2016-7305]]]
+        PrivatePort = 7305
+        PublicPort = 7305
+        Protocol = tcp
+
+
+
+        [[[input-endpoint dcv2016-7306]]]
+        PrivatePort = 7306
+        PublicPort = 7306
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7307]]]
+        PrivatePort = 7307
+        PublicPort = 7307
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7308]]]
+        PrivatePort = 7308
+        PublicPort = 7308
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7309]]]
+        PrivatePort = 7309
+        PublicPort = 7309
+        Protocol = tcp
+
+
+        [[[input-endpoint dcv2016-7310]]]
+        PrivatePort = 7310
+        PublicPort = 7310
+        Protocol = tcp
+
+
+
+        [[[volume clustershared]]]
+        Size = 512
+        Mount = clustershared
+
+
+        [[[configuration cyclecloud.mounts.clustershared]]]
+        mountpoint = /mnt/exports/shared
+	Azure.LUN=0
+
+
+
+    [[nodearray execute]]
+    MachineType = $ExecuteMachineType
+
+    # The initial number of cores of this type to start when the cluster starts
+    InitialCoreCount= $InitialExecuteCoreCount
+
+    # The maximum number of cores to start when the cluster is configured for autoscaling
+    MaxCoreCount = $MaxExecuteCoreCount
+
+    # Azure Low Priority Instances?
+    BatchAccount = $BatchAccount
+    Interruptible = $UseLowPrio
+
+    AdditionalClusterInitSpecs = $ExecuteClusterInitSpecs
+
+        [[[cluster-init ubercloud:default:1.0.0]]]
+	run_list = recipe[ubercloud::slave]

@@ -1,4 +1,4 @@
-name             "ubercloud"
+name             "ansys19"
 maintainer       "TheUberCloud Inc."
 maintainer_email "support@theubercloud.com"
 license          "Apache 2.0"
