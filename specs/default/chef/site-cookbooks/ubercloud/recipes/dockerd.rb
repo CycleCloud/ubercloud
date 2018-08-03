@@ -3,17 +3,36 @@
 # Recipe:: dockerd.rb
 #
 
-%w(epel-release pdsh).each { |p| package p }
-
-yum_repository 'dockerrepo' do
+yum_repository 'docker-ce' do
   description 'Docker Repository'
-  baseurl 'https://yum.dockerproject.org/repo/main/centos/$releasever'
+  baseurl 'https://download.docker.com/linux/centos/7/$basearch/stable'
   gpgcheck false
   action :create
 end
 
-yum_package 'docker-engine = 1.13.0-1.el7.centos' do
+yum_package 'device-mapper-persistent-data' do
+	action :install
+end
+
+yum_package 'docker-ce = 18.03.1.ce-1.el7.centos' do
   action :install
+end
+
+directory '/etc/docker' do
+        action :create
+end
+
+file '/etc/docker/daemon.json' do
+        content <<-EOU.gsub(/^\s+/, '')
+                {
+                        "storage-driver": "devicemapper",
+                        "storage-opts": [
+                                "dm.basesize=256G"
+                        ]
+                }
+        EOU
+
+        action :create_if_missing
 end
 
 systemd_unit 'docker.service' do
