@@ -3,8 +3,10 @@
 # Recipe:: consul.rb
 #
 
+
 # Search for master IP address
 node.override['ubercloud']['is_master'] = true
+cluster.store_discoverable()
 
 ubercloud_master = cluster.search(:clusterUID => node['cyclecloud']['cluster']['id']).select { |n|
   not n['ubercloud'].nil? and n['ubercloud']['is_master'] == true

@@ -55,11 +55,6 @@ Order = 15
         Description = Email address of the person that use this UberCloud container
         Required = True
 
-	[[[parameter ImageIdPrefix]]]
-        ParameterType = hidden
-        HideLabel = true
-        DefaultValue = "/subscriptions/319f3b67-0a2c-49e3-8ee2-ec8ffc6d7e3f/resourceGroups/image-store/providers/Microsoft.Compute/images/nv-c73-n35279-cycle-v1"
-
 
 	[[[parameter AnsysLicenseServerURI]]]
         Label = ANSYS License Server URI
@@ -243,7 +238,6 @@ Autoscale = $Autoscale
     [[node defaults]]
     Credentials = $Credentials
 
-    ImageName = $ImageName
     SubnetId = $SubnetId
     Region = $Region
     KeyPairLocation = $keypairLocation
@@ -262,33 +256,32 @@ Autoscale = $Autoscale
         # can use it to change the default CycleServer admin password (defaults to cluster name):
         # UberCloud containers require the hpcuser
         cyclecloud.cluster.user.name = hpcuser
-        cyclecloud.cluster.user.uid = 500
-        cyclecloud.cluster.user.gid = 500
+        cyclecloud.cluster.user.uid = 60001
+        cyclecloud.cluster.user.gid = 60001
 
         [[[configuration ubercloud]]]
-        #docker.private_registry_server = $RegistryServer
         docker.private_registry_user = $RegistryUser
         docker.private_registry_user_password = $RegistryUserPassword
-        #docker.container_image_private_registry_uri = $ContainerImageRegistryURI
-        #docker.container_image_name = $ContainerImageName
         docker.customer_email_address = $CustomerEmailAddress
         docker.ansys_license_server = $AnsysLicenseServerURI
 	docker.dcv_license_server = $DCVLicenseServerURI
 
-        [[[cluster-init ubercloud:ansys19:1.0.0]]]
+        [[[cluster-init ubercloud:default:1.0.0]]]
 
     [[node master]]
     MachineType = $MasterMachineType
     IsReturnProxy = $ReturnProxy
 
-    #Azure.Publisher = OpenLogic
-    #Azure.Offer = CentOS
-    #Azure.ImageVersion = 7.4.20180118
-    #Azure.Sku = 7.4
-    #Azure.OS = linux
+    Azure.Publisher = OpenLogic
+    Azure.Offer = CentOS
+    Azure.ImageVersion = 7.3.20170925
+    Azure.Sku = 7.3
+    Azure.OS = linux
 
-    ImageId = $ImageIdPrefix-$Region
-    ImageOS = linux
+    InstallJetpack = true
+    JetpackVersion = 6.8.1
+    JetpackPlatform = centos-7
+    AwaitInstallation = true
 
 
     AdditionalClusterInitSpecs = $MasterClusterInitSpecs
@@ -401,6 +394,7 @@ Autoscale = $Autoscale
 
     [[nodearray execute]]
     MachineType = $ExecuteMachineType
+    ImageName = $ImageName
 
     # The initial number of cores of this type to start when the cluster starts
     InitialCoreCount= $InitialExecuteCoreCount

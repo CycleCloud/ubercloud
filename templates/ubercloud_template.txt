@@ -55,12 +55,6 @@ Order = 15
         Description = Email address of the person that use this UberCloud container
         Required = True
 
-	[[[parameter ImageIdPrefix]]]
-        ParameterType = hidden
-        HideLabel = true
-        DefaultValue = "/subscriptions/319f3b67-0a2c-49e3-8ee2-ec8ffc6d7e3f/resourceGroups/image-store/providers/Microsoft.Compute/images/nv-c73-n35279-cycle-v1"
-
-
 	[[[parameter AnsysLicenseServerURI]]]
         Label = License Server URI
         Description = License Server to use. You should provide it in following format: "ISV_PORT:FLEXNET_PORT@LICENSE_SERVER_ADDRESS"
@@ -89,12 +83,12 @@ Order = 15
 
 
 	[[[parameter MasterContainerImageURI]]]
-	Label = Master Container Reg URI
+	Label = Login Container Reg URI
         Description = Location of the Master Container image registry
         Required = True
 
-        [[[parameter ContainerImageRegistryURI]]]
-        Label = Container Reg URI
+        [[[parameter ExecuteContainerImageURI]]]
+        Label = Compute Container Reg URI
         Description = Location of the Container image registry
         Required = True
 
@@ -248,7 +242,7 @@ Order = 40
 [cluster UberCloud]
 FormLayout = selectionpanel
 Category = Ubercloud
-IconUrl = https://s3.amazonaws.com/ubercloud.public.tools/cyclecloud-related/images/UberCloudLogo.jpg
+IconUrl = https://s3.amazonaws.com/ubercloud.public.tools/cyclecloud-related/images/UberCloudIcon.jpg
 
 # Enable/disable autoscaling
 # The scheduler load will determine the number of execute machines that are started, machines will terminate themselves if they are idle
@@ -261,7 +255,6 @@ Autoscale = $Autoscale
     [[node defaults]]
     Credentials = $Credentials
 
-    ImageName = $ImageName
     SubnetId = $SubnetId
     Region = $Region
     KeyPairLocation = $keypairLocation
@@ -288,7 +281,6 @@ Autoscale = $Autoscale
         docker.private_registry_user = $RegistryUser
         docker.private_registry_user_password = $RegistryUserPassword
         docker.container_image_private_registry_uri = $ContainerImageRegistryURI
-        #docker.container_image_name = $ContainerImageName
         docker.customer_email_address = $CustomerEmailAddress
         docker.ansys_license_server = $AnsysLicenseServerURI
         docker.dcv_license_server = $DCVLicenseServerURI
@@ -300,14 +292,16 @@ Autoscale = $Autoscale
     MachineType = $MasterMachineType
     IsReturnProxy = $ReturnProxy
 
-    #Azure.Publisher = OpenLogic
-    #Azure.Offer = CentOS
-    #Azure.ImageVersion = 7.4.20180118
-    #Azure.Sku = 7.4
-    #Azure.OS = linux
+    Azure.Publisher = OpenLogic
+    Azure.Offer = CentOS
+    Azure.ImageVersion = 7.3.20170925
+    Azure.Sku = 7.3
+    Azure.OS = linux
 
-    ImageId = $ImageIdPrefix-$Region
-    ImageOS = linux
+    InstallJetpack = true
+    JetpackVersion = 6.8.1
+    JetpackPlatform = centos-7
+    AwaitInstallation = true
 
 
     AdditionalClusterInitSpecs = $MasterClusterInitSpecs
@@ -420,6 +414,7 @@ Autoscale = $Autoscale
 
     [[nodearray execute]]
     MachineType = $ExecuteMachineType
+    ImageName = $ImageName
 
     # The initial number of cores of this type to start when the cluster starts
     InitialCoreCount= $InitialExecuteCoreCount
